@@ -32,3 +32,14 @@ Example `config.txt`:
 
 ### File not showing up in file Explorer
 Ensure that file sharing is enabled on your device. For IOS this means pressing "allow" when prompted to share photos with device, and on android it may involve changing the USB settings from charging mode to file transfer mode
+
+### Powershell popup instantly closes on first run
+This is typically caused by powershell not having the permissions necessary
+** TO USE THIS TOOL YOU MUST DISABLE WINDOWS PROTECTIONS AGAINST RUNNING SCRIPTS **
+** THIS MIGHT MAKE YOU MORE VULNERABLE WHILE USING **
+1. Run powershell as an administrator
+2. Run the command ```Set-ExecutionPolicy Unrestricted```
+3. Check for the change by running ```Get-ExecutionPolicy```
+4. Run the script
+
+If you want to button up security after using simply run ```Set-ExecutionPolicy Restricted``` to bring the system back to default.

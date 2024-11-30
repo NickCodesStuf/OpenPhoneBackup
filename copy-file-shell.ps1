@@ -5,8 +5,7 @@ function Copy-FromShell {
     param (
         [string]$sourceDir,
         [string]$destinationDir,
-        [string]$folderName,
-        [string]$deviceName
+        [string]$folderName
     )
 
     $shellApp = New-Object -ComObject Shell.Application
@@ -117,7 +116,8 @@ function Copy-FromShell {
     try {
         $namespace = Get-ShellNamespace -path $sourceDir -shellApp $shellApp
         if ($null -eq $namespace) {
-            Write-Debug "Failed to find namespace for source directory: $sourceDir"
+            Write-Output "Failed to find namespace for source directory: $sourceDir"
+            Read-Host -Prompt "Upload FAILED: Press Enter to exit"
             exit 1
         }
 
@@ -156,12 +156,14 @@ function Copy-FromShell {
             }
             Write-Debug "All files copied successfully from $sourceDir to $destinationDir"
         } else {
-            Write-Debug "Failed to find namespace for source directory: $sourceDir, Namespace object is null."
+            Write-Output "Failed to find namespace for source directory: $sourceDir, Namespace object is null."
+            Read-Host -Prompt "Upload FAILED: Press Enter to exit"
             exit 1
         }
     } catch {
-        Write-Debug "Failed to access source directory: $sourceDir"
-        Write-Debug "Error details: $_"
+        Write-Output "Failed to access source directory: $sourceDir"
+        Write-Output "Error details: $_"
+        Read-Host -Prompt "Upload FAILED: Press Enter to exit"
         exit 1
     }
 }
@@ -172,7 +174,8 @@ $configPath = Join-Path -Path $scriptDir -ChildPath "config.txt"
 
 # Check if the configuration file exists
 if (-not (Test-Path -Path $configPath)) {
-    Write-Debug "Configuration file not found: $configPath"
+    Write-Output "Configuration file not found: $configPath"
+    Read-Host -Prompt "Upload FAILED: Press Enter to exit"
     exit 1
 }
 
@@ -182,5 +185,13 @@ $config = Get-Content -Path $configPath | Where-Object { $_ -notmatch '^\s*#' -a
     @{$parts[0].Trim() = $parts[1].Trim()}
 }
 
+# Check if any configuration value is empty
+if ([string]::IsNullOrWhiteSpace($config.sourceDir) -or [string]::IsNullOrWhiteSpace($config.destinationDir) -or [string]::IsNullOrWhiteSpace($config.folderName)) {
+    Write-Output "One or more configuration values are empty."
+    Read-Host -Prompt "Upload FAILED: Press Enter to exit"
+    exit 1
+}
+
 # Call the function with parameters from the configuration file
 Copy-FromShell -sourceDir $config.sourceDir -destinationDir $config.destinationDir -folderName $config.folderName
+Read-Host -Prompt "Upload complete: Press Enter to exit"
