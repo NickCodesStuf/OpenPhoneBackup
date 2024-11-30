@@ -1,0 +1,8 @@
+# Specify the file path on the phone from the file navigator. Example: "This PC\SAMSUNG-SM-N910V\Card\Images"
+sourceDir=
+
+# Specify the destination directory path. Example: "C:\Photos"
+destinationDir=
+
+# Specify the folder name for the backup. Example: "SAMSUNG-Photo-backup-11-29-2024"
+folderName=
